@@ -13,7 +13,7 @@ app.get('/', (req, res) => {
 });
 
 app.post('/get-key', (req, res) => {
-  if (req.body.secret === process.env.SECRET) {
+  if (req.body.message === process.env.SECRET) {
     res.send({ key: process.env.KEY });
   } else {
     res.status(401).send({ message: 'Unauthorized' });
