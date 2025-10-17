@@ -2,22 +2,28 @@ const express = require('express');
 const app = express();
 require('dotenv').config();
 const PORT = process.env.PORT || 3000;
-const path = require('path');
-app.use(express.json());
 const cors = require('cors');
 
+app.use(express.json());
 app.use(cors());
+
 app.get('/', (req, res) => {
   res.send({ message: 'Server is running' });
 });
 
-app.post('/get-key', (req, res) => {
-  if (req.body.message === process.env.SECRET) {
-    res.send({ key: process.env.KEY });
-  } else {
-    res.status(401).send({ message: 'Unauthorized' });
-  }
-});
+for (let i = 0; i < 5; i++) {
+  const suffix = i === 0 ? '' : String(i + 1);
+  const route = `/get-key${suffix}`;
+  const envName = `key${suffix}`;
+  app.post(route, (req, res) => {
+    const value = process.env[envName];
+    if (value) {
+      res.send({ key: value });
+    } else {
+      res.status(404).send({ message: 'Key not configured' });
+    }
+  });
+}
 
 app.use((req, res) => {
   res.status(404).send({ message: 'Endpoint not found' });
