@@ -1,124 +1,41 @@
-# Documentation for Express Server
+# README
 
-## Overview
+Simple server to return up to five API keys without storing them in GitHub.
 
-This document provides details on setting up and running an Express server that retrieves API keys securely based on environment variables. The server includes basic endpoints to check if it's running and to retrieve a key if the correct secret is provided.
+## Deploy
 
-## Requirements
+1. Fork this repo to your account.
+2. On render.com create a new Web Service from your fork.
+3. During setup add environment variables named:
+   key
+   key2
+   key3
+   key4
+   key5
+   Add only the ones you need.
+4. Set the start command to `node server.js` and deploy.
 
-- Node.js installed
-- npm (Node Package Manager) installed
-- dotenv package for managing environment variables
+## Endpoints
 
-## Installation
+Send a POST request to one of these endpoints. Each returns the matching environment variable.
 
-1. **Clone the Repository**:
+POST /get-key  uses env key  
+POST /get-key2 uses env key2  
+POST /get-key3 uses env key3  
+POST /get-key4 uses env key4  
+POST /get-key5 uses env key5
 
-   ```bash
-   git clone <repository-url>
-   cd <repository-directory>
-   ```
+If the variable is not set the server returns 404 with a short message.
 
-2. **Install Dependencies**:
+## Examples
 
-   ```bash
-   npm install express dotenv
-   ```
-
-3. **Set Up Environment Variables**:
-   Create a `.env` file in the root directory with the following content:
-   ```plaintext
-   PORT=3000
-   SECRET=your-secret-key
-   KEY=your-api-key
-   ```
-
-## Usage
-
-1. **Start the Server**:
-
-   ```bash
-   node index.js
-   ```
-
-   or
-
-   ```bash
-   npm start
-   ```
-
-2. **Server Endpoints**:
-
-   - **GET /**:
-
-     - **Description**: Check if the server is running
-     - **Response**:
-       ```json
-       {
-         "message": "Server is running"
-       }
-       ```
-
-   - **POST /get-key**:
-
-     - **Description**: Retrieve the API key if the correct secret is provided
-     - **Request Body**:
-       ```json
-       {
-         "secret": "your-secret-key"
-       }
-       ```
-     - **Response**:
-       - **Success (200)**:
-         ```json
-         {
-           "key": "your-api-key"
-         }
-         ```
-       - **Unauthorized (401)**:
-         ```json
-         {
-           "message": "Unauthorized"
-         }
-         ```
-
-   - **404 Not Found**:
-     - **Description**: Handle undefined endpoints
-     - **Response**:
-       ```json
-       {
-         "message": "Endpoint not found"
-       }
-       ```
-
-## Example Code
-
-```javascript
-// express server
-const express = require('express');
-const app = express();
-require('dotenv').config();
-const PORT = process.env.PORT || 3000;
-const path = require('path');
-app.use(express.json());
-
-app.get('/', (req, res) => {
-  res.send({ message: 'Server is running' });
+Fetch
+```js
+const res = await fetch('https://your-service.onrender.com/get-key2', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: '{}'
 });
-
-app.post('/get-key', (req, res) => {
-  if (req.body.secret === process.env.SECRET) {
-    res.send({ key: process.env.KEY });
-  } else {
-    res.status(401).send({ message: 'Unauthorized' });
-  }
-});
-
-app.use((req, res) => {
-  res.status(404).send({ message: 'Endpoint not found' });
-});
-
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+const data = await res.json();
+// data.key is your value
 ```
