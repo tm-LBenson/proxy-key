@@ -13,7 +13,7 @@ Simple server to return up to five API keys without storing them in GitHub.
    key4
    key5
    Add only the ones you need.
-4. Set the start command to `node server.js` and deploy.
+4. Set the start command to `node app.js` and deploy.
 
 ## Endpoints
 
